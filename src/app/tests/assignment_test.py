@@ -1,7 +1,12 @@
+"""
+Test cases for assignment api's
+"""
 from src.app.api.assignment.v1.assignment_api import *
+
 
 # client is a fixture, injected by the `pytest-flask` plugin
 def test_get_assignment(client):
+    """Test `assignments/<id>` api"""
     response = client.get("assignments/1")
 
     # Validate the response

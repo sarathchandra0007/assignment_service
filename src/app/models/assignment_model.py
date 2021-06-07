@@ -1,10 +1,10 @@
 """
-#
+Assignment model
 """
 from . import db
 from sqlalchemy.sql import func
 
-# Helper table for many to many relationship
+# Helper table for many to many relationship between tags and assignments
 assignment_tags = db.Table('tags',
                            db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
                            db.Column('assignment_id', db.Integer, db.ForeignKey('assignment.id'), primary_key=True)
@@ -35,13 +35,17 @@ class Assignment(db.Model):
         self.duration = duration
 
     def _get_tags(self):
+        """Get all tag names for an assignment"""
         return [x.name for x in self.tags]
 
     def _set_tags(self, value):
+        """Set all tags while creation"""
         for tag in value:
             self.tags.append(self._find_or_create_tag(tag))
 
-    def _find_or_create_tag(self, tag):
+    @staticmethod
+    def _find_or_create_tag(tag):
+        """Create Tags in Tag model"""
         q_set = Tag.query.filter_by(name=tag)
         tag_obj = q_set.first()
         if not tag_obj:
@@ -49,6 +53,7 @@ class Assignment(db.Model):
         return tag_obj
 
     def save(self):
+        """Db call to save data"""
         db.session.add(self)
         db.session.commit()
         return self

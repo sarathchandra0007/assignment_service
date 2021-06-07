@@ -11,23 +11,18 @@ from app.models import db
 
 @server.api.route('/assignments')
 class AssignmentCollection(Resource):
-    """ AssignmentCollection """
+    """ AssignmentCollection is responsible to get all assignments and create an assignment"""
 
     @server.api.marshal_list_with(assignment_serializer)
     def get(self):
-        """
-
-        :return:
-        """
+        """Get all assignments"""
         assignments = Assignment.query.all()
         return assignments
 
     @server.api.response(201, 'Assignment successfully created')
     @server.api.expect(assignment_serializer)
     def post(self):
-        """
-        Create new assignment
-        """
+        """Create new assignment"""
         data = request.json
         tags = data.get('tags', [])
         assignment = Assignment(
@@ -44,20 +39,22 @@ class AssignmentCollection(Resource):
 
 @server.api.route('/assignments/<int:id>')
 class AssignmentInfo(Resource):
-    """AssignmentInfo"""
+    """AssignmentInfo is responsible to get information of particular assignment"""
 
     @server.api.marshal_list_with(assignment_serializer)
     def get(self, id):
+        """Get assignment info based on id"""
         assignment = Assignment.query.filter(Assignment.id == id).first()
         return assignment
 
 
 @server.api.route('/assignments/<tags>')
 class AssignmentTag(Resource):
-    """AssignmentTag"""
+    """AssignmentTag is responsible to return all assignments for a given tags"""
 
     @server.api.marshal_list_with(assignment_serializer)
     def get(self, tags):
+        """Get assignment info for given tags"""
         q = db.session.query(Assignment)
         tags = list(tags.split(","))
         resp = q.filter(Assignment.tags.any(Tag.name.in_(tags))).all()
