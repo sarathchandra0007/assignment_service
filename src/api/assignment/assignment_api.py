@@ -4,14 +4,14 @@
 from flask_restplus import Resource
 from src.server.wsgi import server
 from .serializers import assignment_serializer
-from src.models.assignment_model import Assignment
+from src.models.assignment_model import Assignment, Tag
 from flask import request
 from src.models import db
 
-
 @server.api.route('/assignments')
-class AssignmentCreation(Resource):
-    """ # """
+class AssignmentCollection(Resource):
+    """ AssignmentCollection """
+
     @server.api.marshal_list_with(assignment_serializer)
     def get(self):
         """
@@ -28,13 +28,36 @@ class AssignmentCreation(Resource):
         Create new assignment
         """
         data = request.json
-        name = data.get('name', '')
-        title = data.get('title', '')
-        description = data.get('description', '')
-        type = data.get('type', '')
-        duration = data.get('duration', 0)
         tags = data.get('tags', [])
-        assignment = Assignment(name, title, type, duration, description)
+        assignment = Assignment(
+            name=data.get('name', ''),
+            title=data.get('title', ''),
+            description=data.get('description', ''),
+            type=data.get('type', ''),
+            duration=data.get('duration', 0)
+        )
         assignment._set_tags(tags)
         assignment.save()
         return {"status": "ok"}, 201
+
+
+@server.api.route('/assignments/<int:id>')
+class AssignmentInfo(Resource):
+    """AssignmentInfo"""
+
+    @server.api.marshal_list_with(assignment_serializer)
+    def get(self, id):
+        assignment = Assignment.query.filter(Assignment.id == id).first()
+        return assignment
+
+
+@server.api.route('/assignments/<tags>')
+class AssignmentTag(Resource):
+    """AssignmentTag"""
+
+    @server.api.marshal_list_with(assignment_serializer)
+    def get(self, tags):
+        q = db.session.query(Assignment)
+        tags = list(tags.split(","))
+        resp = q.filter(Assignment.tags.any(Tag.name.in_(tags))).all()
+        return resp
