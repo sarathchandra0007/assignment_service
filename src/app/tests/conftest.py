@@ -1,5 +1,5 @@
 import pytest
-from src.server.wsgi import server
+from app.server.wsgi import server
 
 # Creates a fixture whose name is "app"
 # and returns our flask server instance

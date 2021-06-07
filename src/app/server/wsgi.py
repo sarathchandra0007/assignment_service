@@ -3,8 +3,8 @@
 """
 from flask import Flask
 from flask_restplus import Api
-from src.models import db
-from src.environment.config import environment_config
+from app.models import db
+from app.environment.config import environment_config
 
 
 class Server(object):
@@ -21,7 +21,8 @@ class Server(object):
         """runner"""
         self.app.run(
             debug=environment_config["debug"],
-            port=environment_config["port"]
+            port=environment_config["port"],
+            host='0.0.0.0'
         )
 
 

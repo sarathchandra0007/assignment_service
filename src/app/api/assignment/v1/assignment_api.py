@@ -1,12 +1,13 @@
 """
-#
+Assignment Api's
 """
 from flask_restplus import Resource
-from src.server.wsgi import server
-from .serializers import assignment_serializer
-from src.models.assignment_model import Assignment, Tag
+from app.server.wsgi import server
+from app.api.assignment.v1.serializers import assignment_serializer
+from app.models.assignment_model import Assignment, Tag
 from flask import request
-from src.models import db
+from app.models import db
+
 
 @server.api.route('/assignments')
 class AssignmentCollection(Resource):

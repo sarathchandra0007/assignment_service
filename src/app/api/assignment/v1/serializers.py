@@ -1,6 +1,6 @@
 """Assignment serializer"""
 
-from src.server.wsgi import server
+from app.server.wsgi import server
 from flask_restplus import fields
 
 assignment_serializer = server.api.model('Assignment', {
