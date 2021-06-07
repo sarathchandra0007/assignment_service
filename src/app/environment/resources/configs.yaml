@@ -1,0 +1,13 @@
+production:
+  port: 7000
+  debug: False
+  swagger-url: "/api/swagger"
+  SQLALCHEMY_DATABASE_URI: "sqlite:///db.sqlite.prod"
+  SQLALCHEMY_TRACK_MODIFICATIONS: False
+
+development:
+  port: 5000
+  debug: True
+  swagger-url: "/api/swagger"
+  SQLALCHEMY_DATABASE_URI: "sqlite:///db.sqlite.dev"
+  SQLALCHEMY_TRACK_MODIFICATIONS: False

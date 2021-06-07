@@ -4,7 +4,7 @@ Initialize server instance
 from flask import Flask
 from flask_restplus import Api
 from app.models import db
-from app.environment.config import environment_config
+from app.environment.load_config import environment_config
 
 
 class Server(object):
