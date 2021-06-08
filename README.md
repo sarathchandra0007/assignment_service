@@ -13,7 +13,7 @@
 2. build docker using ```docker-compose build```
 3. Run tests using ```docker-compose run test```
 4. Run application using ```docker-compose up app```
-5. swagger UI ```http://localhost:7000/api/swagger```
+5. swagger UI ```http://localhost:7000/```
 
 ***Apis***
 
