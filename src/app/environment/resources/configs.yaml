@@ -1,7 +1,7 @@
 production:
   port: 7000
   debug: False
-  swagger-url: "/api/swagger"
+  swagger-url: "/"
   SQLALCHEMY_DATABASE_URI: "sqlite:///db.sqlite.prod"
   SQLALCHEMY_TRACK_MODIFICATIONS: False
   RESTPLUS_MASK_SWAGGER: False
@@ -9,7 +9,7 @@ production:
 development:
   port: 5000
   debug: True
-  swagger-url: "/api/swagger"
+  swagger-url: "/"
   SQLALCHEMY_DATABASE_URI: "sqlite:///db.sqlite.dev"
   SQLALCHEMY_TRACK_MODIFICATIONS: False
   RESTPLUS_MASK_SWAGGER: False
