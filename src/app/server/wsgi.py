@@ -13,17 +13,19 @@ class Server(object):
         # Create flask application
         self.app = Flask(__name__)
         # Load sqlalchemy related configs
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = environment_config["SQLALCHEMY_DATABASE_URI"]
-        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = environment_config["SQLALCHEMY_TRACK_MODIFICATIONS"]
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = environment_config['SQLALCHEMY_DATABASE_URI']
+        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = environment_config['SQLALCHEMY_TRACK_MODIFICATIONS']
         # Create flask-restplus instance
-        self.api = Api(self.app, title='Assignment API', doc=environment_config["swagger-url"])
+        self.api = Api(self.app, title='Assignment API', doc=environment_config['swagger-url'])
+        # Create namespace
+        self.ns = self.api.namespace('Assignment', description='Basic CRED operations on assignment')
         db.init_app(self.app)
 
     def run(self):
         """runner"""
         self.app.run(
-            debug=environment_config["debug"],
-            port=environment_config["port"],
+            debug=environment_config['debug'],
+            port=environment_config['port'],
             host='0.0.0.0'
         )
 
@@ -36,4 +38,3 @@ server = Server()
 def create_tables():
     """This function makes the application to create all the tables before first request"""
     db.create_all()
-

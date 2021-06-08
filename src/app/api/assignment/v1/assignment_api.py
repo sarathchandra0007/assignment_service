@@ -1,15 +1,17 @@
 """
 Assignment Api's
 """
+import json
+
 from flask_restplus import Resource
 from app.server.wsgi import server
-from app.api.assignment.v1.serializers import assignment_serializer
+from app.api.assignment.v1.serializers import assignment_serializer, assignment_schema
 from app.models.assignment_model import Assignment, Tag
-from flask import request
+from flask import request, jsonify
 from app.models import db
 
 
-@server.api.route('/assignments')
+@server.ns.route('/assignments')
 class AssignmentCollection(Resource):
     """ AssignmentCollection is responsible to get all assignments and create an assignment"""
 
@@ -37,25 +39,31 @@ class AssignmentCollection(Resource):
         return {"status": "ok"}, 201
 
 
-@server.api.route('/assignments/<int:id>')
+@server.ns.route('/assignments/<int:id>')
 class AssignmentInfo(Resource):
     """AssignmentInfo is responsible to get information of particular assignment"""
 
-    @server.api.marshal_list_with(assignment_serializer)
+    @server.api.doc(responses={200: 'OK', 400: 'Invalid Id'},
+                    params={'id': 'Specify the Id of assignment'})
     def get(self, id):
         """Get assignment info based on id"""
         assignment = Assignment.query.filter(Assignment.id == id).first()
-        return assignment
+        if assignment:
+            result = assignment_schema.dump(assignment)
+            return jsonify(result)
+        else:
+            server.api.abort(400, status='Could not retrieve assignment', status_code=400)
 
 
-@server.api.route('/assignments/<tags>')
+@server.ns.route('/assignments/<tags>')
 class AssignmentTag(Resource):
     """AssignmentTag is responsible to return all assignments for a given tags"""
 
+    @server.api.doc(responses={200: 'OK'})
     @server.api.marshal_list_with(assignment_serializer)
     def get(self, tags):
         """Get assignment info for given tags"""
         q = db.session.query(Assignment)
-        tags = list(tags.split(","))
+        tags = json.loads(tags)
         resp = q.filter(Assignment.tags.any(Tag.name.in_(tags))).all()
         return resp

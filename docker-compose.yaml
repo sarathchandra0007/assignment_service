@@ -1,5 +1,9 @@
 version: "2"
 services:
+  test:
+    container_name: assignment-app-test
+    build: ./
+    command: pytest
   app:
     container_name: assignment-app
     build: ./
