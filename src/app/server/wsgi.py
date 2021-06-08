@@ -9,16 +9,17 @@ from app.environment.load_config import environment_config
 
 class Server(object):
     """server class is responsible for creating new flask application and to load required db configs"""
+
     def __init__(self):
         # Create flask application
         self.app = Flask(__name__)
         # Load sqlalchemy related configs
         self.app.config['SQLALCHEMY_DATABASE_URI'] = environment_config['SQLALCHEMY_DATABASE_URI']
         self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = environment_config['SQLALCHEMY_TRACK_MODIFICATIONS']
+        self.app.config['RESTPLUS_MASK_SWAGGER'] = environment_config['RESTPLUS_MASK_SWAGGER']
         # Create flask-restplus instance
-        self.api = Api(self.app, title='Assignment API', doc=environment_config['swagger-url'])
-        # Create namespace
-        self.ns = self.api.namespace('Assignment', description='Basic CRED operations on assignment')
+        self.api = Api(self.app, title='Assignment API', doc=environment_config['swagger-url'],
+                       default='Assignment Api', default_label="Rest Api's")
         db.init_app(self.app)
 
     def run(self):

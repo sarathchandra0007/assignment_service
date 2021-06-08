@@ -3,6 +3,7 @@ Assignment Api's
 """
 import json
 
+import sqlalchemy.exc
 from flask_restplus import Resource
 from app.server.wsgi import server
 from app.api.assignment.v1.serializers import assignment_serializer, assignment_schema
@@ -11,7 +12,7 @@ from flask import request, jsonify
 from app.models import db
 
 
-@server.ns.route('/assignments')
+@server.api.route('/assignments')
 class AssignmentCollection(Resource):
     """ AssignmentCollection is responsible to get all assignments and create an assignment"""
 
@@ -39,7 +40,7 @@ class AssignmentCollection(Resource):
         return {"status": "ok"}, 201
 
 
-@server.ns.route('/assignments/<int:id>')
+@server.api.route('/assignment/<int:id>')
 class AssignmentInfo(Resource):
     """AssignmentInfo is responsible to get information of particular assignment"""
 
@@ -55,15 +56,22 @@ class AssignmentInfo(Resource):
             server.api.abort(400, status='Could not retrieve assignment', status_code=400)
 
 
-@server.ns.route('/assignments/<tags>')
+@server.api.route('/assignments/<tags>')
 class AssignmentTag(Resource):
     """AssignmentTag is responsible to return all assignments for a given tags"""
 
-    @server.api.doc(responses={200: 'OK'})
+    @server.api.doc(responses={200: 'OK'}, params={'tags': "Specify list of tags. Sample value " + '`["t1", "t2"]`'})
     @server.api.marshal_list_with(assignment_serializer)
     def get(self, tags):
         """Get assignment info for given tags"""
         q = db.session.query(Assignment)
-        tags = json.loads(tags)
-        resp = q.filter(Assignment.tags.any(Tag.name.in_(tags))).all()
-        return resp
+        try:
+            tags = json.loads(tags)
+            resp = q.filter(Assignment.tags.any(Tag.name.in_(tags))).all()
+            return resp
+        except (sqlalchemy.exc.ArgumentError, json.decoder.JSONDecodeError):
+            server.api.abort(400, status='Enter tags as list of strings format. Sample format mentioned in description',
+                             status_code=400)
+        except Exception:
+            server.api.abort(400, status='Unknown exception. Input format might be wrong',
+                             status_code=400)

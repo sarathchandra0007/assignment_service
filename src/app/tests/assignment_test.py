@@ -22,21 +22,21 @@ def test_create_assignment(client):
 def test_get_assignment_success(client):
     """test_get_assignment"""
 
-    response = client.get("/assignments/1")
+    response = client.get("/assignment/1")
 
     # Validate the response
     assert response.status_code == 200
     assert response.json == {"id": 1, "name": "assignment1", "title": "title1", "description": "desc1", "type": "t1",
                              "duration": 90, "tags": ["GMAT", "SPACE"]}
 
-    response1 = client.get("/assignments/2")
+    response1 = client.get("/assignment/2")
     assert response1.json == {"id": 2, "name": "assignment2", "title": "title2", "description": "desc2", "type": "t2",
                               "duration": 40, "tags": ["GMAT", "GRE"]}
 
 
 def test_get_assignment_failure(client):
     """test_get_assignment"""
-    response = client.get("/assignments/100")
+    response = client.get("/assignment/100")
     assert response.status_code == 400
     assert response.json == {'status': 'Could not retrieve assignment', 'status_code': 400}
 

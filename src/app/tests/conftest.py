@@ -2,10 +2,7 @@
 Conf test
 """
 import pytest
-from flask_sqlalchemy import SQLAlchemy
-
 from app.server.wsgi import server
-from app.models import db
 
 
 # This implicitly creates the `client` fixture, which allows us to execute test API calls.
